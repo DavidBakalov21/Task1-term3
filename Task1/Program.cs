@@ -1,5 +1,5 @@
 ﻿
-var variable = "2 + 2 * 2";
+var variable = "2 + 2";
 char[] operators = new char[] { '+', '-', '/', '*' };
 
 List<string> operations = new List<string>();
@@ -44,27 +44,22 @@ foreach (var operation in operations)
     {
         var first=calculations.Pop();
         var second = calculations.Pop();
-       int firstI = Convert.ToInt32(first);
-       int secondI = Convert.ToInt32(second);
+       int firstI = int.Parse(first.ToString());
+       int secondI = int.Parse(second.ToString());
+       // How can 2 be converted to 50?
+       
+        
+Console.WriteLine(firstI);
+Console.WriteLine(second);
 
-
-       if (l=='+')
-       {
-           int s = firstI + secondI;
-           calculations.Push(Convert.ToChar(s));
-       }else if (l=='-')
-       {
-           int s = firstI - secondI;
-           calculations.Push(Convert.ToChar(s));
-       }else if (l=='*')
-       {
-           int s = firstI * secondI;
-           calculations.Push(Convert.ToChar(s));
-       }else if (l=='/')
-       {
-           int s = firstI / secondI;
-           calculations.Push(Convert.ToChar(s));
-       }
+if (l=='+')
+{
+    int s = firstI + secondI;
+    var b = Convert.ToChar(s);
+    calculations.Push(b);
+    
+    
+}
        
        
     }
@@ -76,5 +71,4 @@ foreach (var VARIABLE in calculations)
 {
     Console.WriteLine(VARIABLE);
 }
-
 
