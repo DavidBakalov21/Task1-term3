@@ -1,4 +1,4 @@
-﻿var variable = "2 + 2 * 8";
+﻿var variable = "( 2 + 2 ) * 8";
 
 char[] operators = new char[] { '+', '-', '/', '*' };
 List<string> operations = new List<string>();
@@ -7,7 +7,7 @@ var Buffer="";
 char op = ',';
 foreach (var ch in variable)
 {
-    if (Char.IsDigit(ch))
+    if (Char.IsDigit(ch)||ch == '('||ch == ')')
     {
         Buffer += ch;
         
@@ -45,7 +45,40 @@ if (Buffer!="")
 
 var controll = "?";
 Stack<String> calculations= new Stack<String>();
-foreach (var l in operations)
+Queue<String> oper = new Queue<string>();
+
+foreach (var t in operations)
+{
+    foreach (var c in t.ToCharArray())
+    {
+        if (Char.IsDigit(c)||c == '('||c == ')')
+        {
+            controll = "Digit";
+        }
+        else if (operators.Contains(c))
+        {
+            controll = "Op";
+        }
+    }
+    if (controll=="Digit")
+    {
+        calculations.Push(t);
+    
+}else if (controll=="Op")
+    {
+        oper.Enqueue(t);
+    }
+}
+    foreach (var VAR in oper)
+    {
+     Console.WriteLine(VAR);   
+    } 
+
+foreach (var VAR in calculations)
+{
+    Console.WriteLine(VAR);   
+}  
+/*foreach (var l in operations)
 {
     foreach (var c in l.ToCharArray())
     {
@@ -110,7 +143,10 @@ foreach (var l in operations)
  }
 
 
+
+
 foreach (var VARIABLE in calculations)
 {
     Console.WriteLine(VARIABLE);
 }
+*/
