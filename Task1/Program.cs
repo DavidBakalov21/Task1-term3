@@ -55,7 +55,7 @@ bool ContainsL(string? l)
 var variable = "2+4*6";
 
 char[] operators = new char[] { '+', '-', '/', '*' };
-var operations = new ArrayList();
+var tokenized = new ArrayList();
 
 var Buffer="";
 char op = ',';
@@ -70,13 +70,13 @@ foreach (var ch in variable)
     {
 
 
-        operations.Add(Buffer);
+        tokenized.Add(Buffer);
 
 
         Buffer = "";
             if (op!=',')
             {
-                operations.Add(op.ToString());
+                tokenized.Add(op.ToString());
             }
 
             //Console.WriteLine(Buffer);
@@ -88,27 +88,27 @@ foreach (var ch in variable)
 }
 if (Buffer!="")
 {
-    operations.Add(Buffer);
-    operations.Add(op.ToString());
+    tokenized.Add(Buffer);
+    tokenized.Add(op.ToString());
 }
 
-for (var i = 0; i < operations.Count(); i++)
+for (var i = 0; i < tokenized.Count(); i++)
 {
-    Console.WriteLine(operations.GetAt(i));
+    Console.WriteLine(tokenized.GetAt(i));
 }
 Console.WriteLine("---------------");
 
 
-Queue<String> calculations= new Queue<String>();
-var oper = new Stack();
+var calculations= new Queue();
+ var oper = new Stack();
 var final = new Stack();
 char[] operatorsHigh = new char[] { '/', '*' };
 char[] operatorsLow = new char[] { '-', '+' };
 string[] kk = new string[2];
-for (var t = 0; t < operations.Count(); t++)
+for (var t = 0; t < tokenized.Count(); t++)
 {
     // 
-    foreach (var c in operations.GetElements())
+    foreach (var c in tokenized.GetElements())
     {
         if (IsDigit(c))
         {
@@ -147,7 +147,7 @@ for (var t = 0; t < operations.Count(); t++)
                 oper.Push(c);
             }
 
-            if (oper.Count()>0 &&  oper.Contains(operatorsLow.ToString()))
+            if (oper.Count()>0 &&  oper.GetAt(0)=="+" || oper.GetAt(0)=="-")
             {
                 oper.Push(c);  
             }
@@ -174,9 +174,9 @@ for (var t = 0; t < operations.Count(); t++)
     }
 }
 
-foreach (var g in calculations)
+for(var g=0; g<calculations.Count(); g++)
 {
-  Console.WriteLine(g);
+  Console.WriteLine(calculations.GetAt(g));
 }
 
 
@@ -316,6 +316,80 @@ public class Stack
         var value = _array[_pointer-1];
         //original variant didn't work
         _pointer--;
+        return value;
+    }
+    public int Count()
+    {
+        return _pointer;
+    }
+    
+    
+    public int IndexOf(string element)
+    {
+        for (var i = 0; i < _array.Length; i++)
+        {
+            if (_array[i] == element)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public bool Contains(string element)
+    {
+        return IndexOf(element) != -1;
+    }
+    
+}
+
+
+
+
+
+public class Queue
+{
+    private const int Capacity = 50;
+
+    private string[] _array = new string[Capacity];
+
+    private int _pointer;
+
+    public void Enqueue(string value)
+    {
+        if (_pointer == _array.Length)
+        {
+            // this code is raising an exception about reaching stack limit
+            throw new Exception("Stack overflowed");
+        }
+
+        _array[_pointer] = value;
+        _pointer++;
+    }
+    public string GetAt(int index)
+    {
+        return _array[index];
+    }
+    public string Dequeue()
+    {
+       
+//original variant (var value = _array[_pointer];) didn't work
+        var value = _array[0];
+        //original variant didn't work
+        for (var i = 0; i < _pointer; i++)
+        {
+            if (i == 0)
+            {
+                for (var j = i; j < _pointer - 1; j++)
+                {
+                    _array[j] = _array[j + 1];
+                }
+
+                _pointer -= 1;
+                
+            }
+        }
         return value;
     }
     public int Count()
