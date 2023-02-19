@@ -104,7 +104,7 @@ var calculations= new Queue();
 var final = new Stack();
 char[] operatorsHigh = new char[] { '/', '*' };
 char[] operatorsLow = new char[] { '-', '+' };
-string[] kk = new string[2];
+string[] tempOpers = new string[2];
 for (var t = 0; t < tokenized.Count(); t++)
 {
     // 
@@ -125,11 +125,11 @@ for (var t = 0; t < tokenized.Count(); t++)
             {
                 for (int i = 0; i < oper.Count(); i++)
                 {
-                    kk[i] = oper.Pop();
+                    tempOpers[i] = oper.Pop();
                     
-                    if (kk[i]!=null)
+                    if (tempOpers[i]!=null)
                     {
-                       calculations.Enqueue(kk[i]); 
+                       calculations.Enqueue(tempOpers[i]); 
                     }
                     
                     
@@ -152,15 +152,15 @@ for (var t = 0; t < tokenized.Count(); t++)
                 oper.Push(c.ToString());  
             }
           
-            else if (oper.Count()>0 &&  oper.Contains(operatorsHigh.ToString()))
+            else if (oper.Count()>0 &&  oper.GetAt(0) == "*" || oper.GetAt(0) == "/")
             {
                 for (int i = 0; i < oper.Count(); i++)
                 {
-                    kk[i] = oper.Pop();
+                    tempOpers[i] = oper.Pop();
                     
-                    if (kk[i]!=null)
+                    if (tempOpers[i]!=null)
                     {
-                        calculations.Enqueue(kk[i]); 
+                        calculations.Enqueue(tempOpers[i]); 
                     }
                     
                     
@@ -179,10 +179,6 @@ for(var g=0; g<calculations.Count(); g++)
   Console.WriteLine(calculations.GetAt(g));
 }
 
-for(var g=0; g<oper.Count(); g++)
-{
-    Console.WriteLine(oper.GetAt(g));
-}
 
 
 
@@ -366,7 +362,7 @@ public class Queue
         if (_pointer == _array.Length)
         {
             // this code is raising an exception about reaching stack limit
-            throw new Exception("Stack overflowed");
+            throw new Exception("Queue overflowed");
         }
 
         _array[_pointer] = value;
