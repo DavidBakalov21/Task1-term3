@@ -123,7 +123,7 @@ for (var t = 0; t < tokenized.Count(); t++)
             }
             else if (oper.Count()>0)
             {
-                for (int i = 0; i < oper.Count(); i++)
+                for (int i = 0; i <= oper.Count(); i++)
                 {
                     tempOpers[i] = oper.Pop();
                     
@@ -154,7 +154,7 @@ for (var t = 0; t < tokenized.Count(); t++)
           
             else if (oper.Count()>0 &&  oper.GetAt(0) == "*" || oper.GetAt(0) == "/")
             {
-                for (int i = 0; i < oper.Count(); i++)
+                for (int i = 0; i <= oper.Count(); i++)
                 {
                     tempOpers[i] = oper.Pop();
                     
@@ -171,6 +171,19 @@ for (var t = 0; t < tokenized.Count(); t++)
            
         }
         
+    }
+}
+
+if (oper.Count() != 0)
+{
+    for (int i = 0; i <= oper.Count(); i++)
+    {
+        tempOpers[i] = oper.Pop();
+
+        if (tempOpers[i] != null)
+        {
+            calculations.Enqueue(tempOpers[i]);
+        }
     }
 }
 
