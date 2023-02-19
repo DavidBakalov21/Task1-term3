@@ -108,17 +108,17 @@ string[] kk = new string[2];
 for (var t = 0; t < tokenized.Count(); t++)
 {
     // 
-    foreach (var c in tokenized.GetElements())
+    foreach (var c in tokenized.GetAt(t))
     {
-        if (IsDigit(c))
+        if (IsDigit(c.ToString()))
         {
-           calculations.Enqueue(c);
+           calculations.Enqueue(c.ToString());
         }
-       else if (ContainsL(c))
+       else if (ContainsL(c.ToString()))
         {
             if (oper.Count()==0)
             {
-                oper.Push(c);
+                oper.Push(c.ToString());
                
             }
             else if (oper.Count()>0)
@@ -135,21 +135,21 @@ for (var t = 0; t < tokenized.Count(); t++)
                     
                     
                 }
-                oper.Push(c);
+                oper.Push(c.ToString());
             }
             
             
-        } else if (ContainsH(c))
+        } else if (ContainsH(c.ToString()))
         {
             if (oper.Count()==0)
             {
                 
-                oper.Push(c);
+                oper.Push(c.ToString());
             }
 
             if (oper.Count()>0 &&  oper.GetAt(0)=="+" || oper.GetAt(0)=="-")
             {
-                oper.Push(c);  
+                oper.Push(c.ToString());  
             }
           
             else if (oper.Count()>0 &&  oper.Contains(operatorsHigh.ToString()))
@@ -166,7 +166,7 @@ for (var t = 0; t < tokenized.Count(); t++)
                     
                     
                 }
-                oper.Push(c);
+                oper.Push(c.ToString());
             }
            
         }
@@ -177,6 +177,11 @@ for (var t = 0; t < tokenized.Count(); t++)
 for(var g=0; g<calculations.Count(); g++)
 {
   Console.WriteLine(calculations.GetAt(g));
+}
+
+for(var g=0; g<oper.Count(); g++)
+{
+    Console.WriteLine(oper.GetAt(g));
 }
 
 
