@@ -1,11 +1,10 @@
-﻿
-bool IsDigit(string? l)
+﻿bool IsDigit(string? token)
 {
-    if (l is null)
+    if (token is null)
     {
         return false;
     }
-    foreach (var e in l)
+    foreach (var e in token)
     {
         if (!Char.IsDigit(e))
         {
@@ -15,182 +14,140 @@ bool IsDigit(string? l)
 
     return true;
 }
-
-bool ContainsH(string? l)
+bool CheckOper(string? token)
 {
-    char[] operatorsHigh = new char[] { '/', '*' };
-    if (l is null)
-    {
-        return false;
-    }
-    foreach (var e in l)
-    {
-        if (!operatorsHigh.Contains(e))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return token is "+" or "-" or "/" or "*" or "^";
 }
 
-bool ContainsL(string? l)
+bool isLBreck(string? token)
 {
-    if (l is null)
-    {
-        return false;
-    }
-    char[] operatorsLow = new char[] { '-', '+' };
-    foreach (var e in l)
-    {
-        if (!operatorsLow.Contains(e))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return token is "(";
 }
 
-var variable = "2+4*6";
-
-char[] operators = new char[] { '+', '-', '/', '*' };
-var tokenized = new ArrayList();
-
-var Buffer="";
-char op = ',';
-foreach (var ch in variable)
+bool isRBreck(string? token)
 {
-    if (Char.IsDigit(ch))
+    return token is ")";
+}
+
+
+//
+int Prior(string token)
+{
+    switch (token)
     {
-        Buffer += ch;
+        case "+":
+        case "-":
+            return 2;
+        case "*":
+        case "/":
+            return 3;
+        case "^":
+            return 4;
+        default:
+            return 0;
+            
         
-    }
-    else if (operators.Contains(ch))
-    {
-
-
-        tokenized.Add(Buffer);
-
-
-        Buffer = "";
-            if (op!=',')
-            {
-                tokenized.Add(op.ToString());
-            }
-
-            //Console.WriteLine(Buffer);
-        op = ch;
-    }
-
-   
-    
-}
-if (Buffer!="")
-{
-    tokenized.Add(Buffer);
-    tokenized.Add(op.ToString());
-}
-
-for (var i = 0; i < tokenized.Count(); i++)
-{
-    Console.WriteLine(tokenized.GetAt(i));
-}
-Console.WriteLine("---------------");
-
-
-var calculations= new Queue();
- var oper = new Stack();
-var final = new Stack();
-char[] operatorsHigh = new char[] { '/', '*' };
-char[] operatorsLow = new char[] { '-', '+' };
-string[] tempOpers = new string[2];
-for (var t = 0; t < tokenized.Count(); t++)
-{
-    // 
-    foreach (var c in tokenized.GetAt(t))
-    {
-        if (IsDigit(c.ToString()))
-        {
-           calculations.Enqueue(c.ToString());
-        }
-       else if (ContainsL(c.ToString()))
-        {
-            if (oper.Count()==0)
-            {
-                oper.Push(c.ToString());
-               
-            }
-            else if (oper.Count()>0)
-            {
-                for (int i = 0; i <= oper.Count(); i++)
-                {
-                    tempOpers[i] = oper.Pop();
-                    
-                    if (tempOpers[i]!=null)
-                    {
-                       calculations.Enqueue(tempOpers[i]); 
-                    }
-                    
-                    
-                    
-                }
-                oper.Push(c.ToString());
-            }
             
-            
-        } else if (ContainsH(c.ToString()))
+    }
+}
+
+
+
+ArrayList Reverse(ArrayList tokens)
+{
+    var res = new Queue();
+    var operators = new Stack();
+    foreach (string tok in tokens.GetArray())
+    {
+        if (IsDigit(tok))
         {
-            if (oper.Count()==0)
+            res.Enqueue(tok);
+        }else if (CheckOper(tok))
+        {
+            while (operators.Count()!=0 && !isLBreck(operators.Peak()) && Prior(operators.Peak())>Prior(tok) || Prior(operators.Peak())==Prior(tok))
             {
                 
-                oper.Push(c.ToString());
+                res.Enqueue(operators.Pop());
+                
+            }
+            operators.Push(tok);
+        }
+        else if (isLBreck(tok))
+        {
+            operators.Push(tok);
+            
+        }else if (isRBreck(tok))
+        {
+            while (!isLBreck(operators.Peak()))
+            {
+                res.Enqueue(operators.Pop());
+                
             }
 
-            if (oper.Count()>0 &&  oper.GetAt(0)=="+" || oper.GetAt(0)=="-")
-            {
-                oper.Push(c.ToString());  
-            }
-          
-            else if (oper.Count()>0 &&  oper.GetAt(0) == "*" || oper.GetAt(0) == "/")
-            {
-                for (int i = 0; i <= oper.Count(); i++)
-                {
-                    tempOpers[i] = oper.Pop();
-                    
-                    if (tempOpers[i]!=null)
-                    {
-                        calculations.Enqueue(tempOpers[i]); 
-                    }
-                    
-                    
-                    
-                }
-                oper.Push(c.ToString());
-            }
-           
+            operators.Pop();
+            
         }
+       
         
     }
+
+    while (operators.Count()>0)
+    {
+        res.Enqueue(operators.Pop());
+    }
+
+    return res.toList(res);
 }
 
-if (oper.Count() != 0)
-{
-    for (int i = 0; i <= oper.Count(); i++)
-    {
-        tempOpers[i] = oper.Pop();
 
-        if (tempOpers[i] != null)
+
+
+ArrayList token(string r)
+{
+    var res = new ArrayList();
+    
+    String Buffer = "";
+    foreach (var c in r)
+    {
+        if (Char.IsNumber(c))
         {
-            calculations.Enqueue(tempOpers[i]);
+            Buffer += c;
+            
+        }else if (c is '+' or '-' or '/' or '*' or '(' or ')' or '^')
+        {
+            if (Buffer.Length>0)
+            {
+                res.Add(Buffer);
+                Buffer = "";
+                
+            }
+            res.Add(c.ToString());
         }
     }
+
+    if (Buffer.Length>0)
+    {
+        res.Add(Buffer);
+    }
+    
+    return res;
 }
 
-for(var g=0; g<calculations.Count(); g++)
+
+var g = token("25+43*6");
+var ReverseTok = Reverse(g);
+for (var i = 0; i < ReverseTok.Count(); i++)
 {
-  Console.WriteLine(calculations.GetAt(g));
+    Console.WriteLine(ReverseTok.GetAt(i));
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -257,7 +214,10 @@ public class ArrayList
     {
         return _array[index];
     }
-    
+    public Array GetArray()
+    {
+        return _array;
+    }
     public int IndexOf(string element)
     {
         for (var i = 0; i < _array.Length; i++)
@@ -336,7 +296,13 @@ public class Stack
     {
         return _pointer;
     }
-    
+
+    public string Peak()
+    {
+        var value = _array[_pointer-1];
+        return value;
+        
+    }
     
     public int IndexOf(string element)
     {
@@ -364,12 +330,26 @@ public class Stack
 
 public class Queue
 {
-    private const int Capacity = 50;
+    private const int Capacity = 10;
 
     private string[] _array = new string[Capacity];
 
     private int _pointer;
+    public Array GetArray()
+    {
+        return _array;
+    }
+   
+    public ArrayList toList(Queue Q)
+    {
+        var Converted = new ArrayList();
+        for (var  elToConvert=0; elToConvert<Q.Count(); elToConvert++)
+        {
+            Converted.Add(Q.Dequeue());
+        }
 
+        return Converted;
+    }
     public void Enqueue(string value)
     {
         if (_pointer == _array.Length)
@@ -431,5 +411,4 @@ public class Queue
     }
     
 }
-
 
