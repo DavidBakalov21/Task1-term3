@@ -1,35 +1,27 @@
-﻿bool IsDigit(string? token)
+﻿bool IsNumberToken(string token)
 {
-    if (token is null)
-    {
-        return false;
-    }
-    foreach (var e in token)
-    {
-        if (!Char.IsDigit(e))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    
+    return int.TryParse(token, out _);
 }
-bool CheckOper(string? token)
+bool IsOperatorToken(string token)
 {
     return token is "+" or "-" or "/" or "*" or "^";
 }
 
-bool isLBreck(string? token)
+bool isLeftBreck(string token)
 {
-    return token is "(";
+    return token == "(";
 }
 
-bool isRBreck(string? token)
+bool isRightBreck(string token)
 {
-    return token is ")";
+    return token == ")";
 }
 
-
+bool LeftAsociative(string token)
+{
+    return token != "^" && IsOperatorToken(token);
+}
 //
 int Prior(string token)
 {
@@ -51,39 +43,59 @@ int Prior(string token)
     }
 }
 
-
-
 ArrayList Reverse(ArrayList tokens)
 {
-    var res = new Queue();
+    var output = new Queue();
     var operators = new Stack();
-    foreach (string tok in tokens.GetArray())
+    for (int token = 0; token < tokens.Count(); token++)
+        //foreach (string token in tokens)
     {
-        if (IsDigit(tok))
+        if (IsNumberToken(tokens.GetAt(token)))
         {
-            res.Enqueue(tok);
-        }else if (CheckOper(tok))
+            output.Enqueue(tokens.GetAt(token));
+        }
+        else if (IsOperatorToken(tokens.GetAt(token)))
         {
-            while (operators.Count()!=0 && !isLBreck(operators.Peak()) && Prior(operators.Peak())>Prior(tok) || Prior(operators.Peak())==Prior(tok))
+            while ( operators.Count()!=0 &&
+                !isLeftBreck(operators.Peek()) && 
+                (
+                    Prior(operators.Peek())>Prior(tokens.GetAt(token)) || 
+                    (
+                    Prior(operators.Peek())==Prior(tokens.GetAt(token)) && 
+                    LeftAsociative(tokens.GetAt(token))
+                    )
+                )
+                )
             {
                 
-                res.Enqueue(operators.Pop());
+                output.Enqueue(operators.Pop());
                 
             }
-            operators.Push(tok);
+            operators.Push(tokens.GetAt(token));
         }
-        else if (isLBreck(tok))
+        else if (isLeftBreck(tokens.GetAt(token)))
         {
-            operators.Push(tok);
+            operators.Push(tokens.GetAt(token));
             
-        }else if (isRBreck(tok))
+        }else if (isRightBreck(tokens.GetAt(token)))
         {
-            while (!isLBreck(operators.Peak()))
+            while (!isLeftBreck(operators.Peek()))
             {
-                res.Enqueue(operators.Pop());
+                if (operators.Count()==0)
+                {
+                    throw new Exception("Error mis");
+                    
+                }
+                
+                output.Enqueue(operators.Pop());
                 
             }
 
+            if (!isLeftBreck(operators.Peek()))
+            {
+                throw new Exception("fdvsdfsfsdf");
+            }
+            
             operators.Pop();
             
         }
@@ -93,21 +105,22 @@ ArrayList Reverse(ArrayList tokens)
 
     while (operators.Count()>0)
     {
-        res.Enqueue(operators.Pop());
+        if (isLeftBreck(operators.Peek()))
+        {
+            throw new Exception("Error mis");
+        }
+        output.Enqueue(operators.Pop());
     }
 
-    return res.toList(res);
+    return output.toList(output);
 }
 
-
-
-
-ArrayList token(string r)
+ArrayList Tokenize(string r)
 {
-    var res = new ArrayList();
+    ArrayList result = new ArrayList();
     
     String Buffer = "";
-    foreach (var c in r)
+    foreach (char c in r)
     {
         if (Char.IsNumber(c))
         {
@@ -117,29 +130,95 @@ ArrayList token(string r)
         {
             if (Buffer.Length>0)
             {
-                res.Add(Buffer);
+                result.Add(Buffer);
                 Buffer = "";
                 
             }
-            res.Add(c.ToString());
+            result.Add(c.ToString());
         }
     }
 
     if (Buffer.Length>0)
     {
-        res.Add(Buffer);
+        result.Add(Buffer);
     }
     
-    return res;
+    return result;
 }
 
 
-var g = token("25+43*6");
-var ReverseTok = Reverse(g);
-for (var i = 0; i < ReverseTok.Count(); i++)
+var g = Tokenize("(33 + 44) * 2");
+    //3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3
+//Console.WriteLine(IsNumberToken("+"));
+ArrayList ReverseTok = Reverse(g);
+//Console.WriteLine(String.Join("", ReverseTok));
+for (int i = 0; i < ReverseTok.Count(); i++)
 {
-    Console.WriteLine(ReverseTok.GetAt(i));
+    Console.WriteLine(ReverseTok.GetAt(i)); 
 }
+Console.WriteLine("-------------"); 
+var s =new Stack();
+for (int i = 0; i < ReverseTok.Count(); i++)
+{
+    if (IsNumberToken(ReverseTok.GetAt(i)))
+    {
+       s.Push(ReverseTok.GetAt(i));
+       
+    }else if (IsOperatorToken(ReverseTok.GetAt(i)))
+    {
+        var first=s.Pop();
+        var second = s.Pop();
+        int firstI = int.Parse(first);
+        int secondI = int.Parse(second);
+        Console.WriteLine(firstI);
+        Console.WriteLine(second);
+
+        if (ReverseTok.GetAt(i)=="+")
+        {
+            int r = firstI + secondI;
+             
+            var b = Convert.ToString(r);
+            s.Push(b);
+     
+     
+        }else if (ReverseTok.GetAt(i)=="-")
+        {
+            int r = firstI - secondI;
+            var b = Convert.ToString(r);
+            s.Push(b);   
+        }
+        else if (ReverseTok.GetAt(i)=="*")
+        {
+            int r = firstI * secondI;
+            var b = Convert.ToString(r);
+            s.Push(b);  
+        }else if(ReverseTok.GetAt(i)=="/")
+        {
+            int r = firstI / secondI;
+            var b = Convert.ToString(r);
+            s.Push(b);  
+        }
+        else if(ReverseTok.GetAt(i)=="^")
+        {
+            int r = firstI / secondI;
+            var b = Convert.ToString(r);
+            s.Push(b);  
+        }
+    }
+}
+
+
+for (int i = 0; i < s.Count(); i++)
+{
+    Console.WriteLine(s.GetAt(i)); 
+}
+
+
+
+
+
+
+
 
 
 
@@ -170,7 +249,7 @@ for (var i = 0; i < ReverseTok.Count(); i++)
 
 public class ArrayList
 {
-    private string[] _array = new String[10];
+    private string[] _array = new String[50];
 
     private int _pointer = 0;
 
@@ -297,8 +376,13 @@ public class Stack
         return _pointer;
     }
 
-    public string Peak()
+    public string Peek()
     {
+        if (_pointer == 0)
+        {
+            //you can also raise an exception here, but we're simple returning nothing
+            return null;
+        }
         var value = _array[_pointer-1];
         return value;
         
@@ -330,7 +414,7 @@ public class Stack
 
 public class Queue
 {
-    private const int Capacity = 10;
+    private const int Capacity = 50;
 
     private string[] _array = new string[Capacity];
 
@@ -345,7 +429,7 @@ public class Queue
         var Converted = new ArrayList();
         for (var  elToConvert=0; elToConvert<Q.Count(); elToConvert++)
         {
-            Converted.Add(Q.Dequeue());
+            Converted.Add(Q.GetAt(elToConvert));
         }
 
         return Converted;
