@@ -147,7 +147,8 @@ ArrayList Tokenize(string r)
 }
 
 
-var g = Tokenize("(33 + 44) * 2");
+var g = Tokenize("4*5-8/2");
+//3^3+(2*10/5)-3
     //3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3
 //Console.WriteLine(IsNumberToken("+"));
 ArrayList ReverseTok = Reverse(g);
@@ -157,60 +158,59 @@ for (int i = 0; i < ReverseTok.Count(); i++)
     Console.WriteLine(ReverseTok.GetAt(i)); 
 }
 Console.WriteLine("-------------"); 
-var s =new Stack();
+var sFinal =new Stack();
 for (int i = 0; i < ReverseTok.Count(); i++)
 {
     if (IsNumberToken(ReverseTok.GetAt(i)))
     {
-       s.Push(ReverseTok.GetAt(i));
+        sFinal.Push(ReverseTok.GetAt(i));
        
     }else if (IsOperatorToken(ReverseTok.GetAt(i)))
     {
-        var first=s.Pop();
-        var second = s.Pop();
+        var first=sFinal.Pop();
+        var second = sFinal.Pop();
         int firstI = int.Parse(first);
         int secondI = int.Parse(second);
-        Console.WriteLine(firstI);
-        Console.WriteLine(second);
 
         if (ReverseTok.GetAt(i)=="+")
         {
             int r = firstI + secondI;
              
             var b = Convert.ToString(r);
-            s.Push(b);
+            sFinal.Push(b);
      
      
         }else if (ReverseTok.GetAt(i)=="-")
         {
-            int r = firstI - secondI;
+            int r =   secondI-firstI;
             var b = Convert.ToString(r);
-            s.Push(b);   
+            sFinal.Push(b);   
         }
         else if (ReverseTok.GetAt(i)=="*")
         {
             int r = firstI * secondI;
             var b = Convert.ToString(r);
-            s.Push(b);  
+            sFinal.Push(b);  
         }else if(ReverseTok.GetAt(i)=="/")
         {
-            int r = firstI / secondI;
+            int r =   secondI/firstI;
             var b = Convert.ToString(r);
-            s.Push(b);  
+            sFinal.Push(b);  
         }
         else if(ReverseTok.GetAt(i)=="^")
         {
-            int r = firstI / secondI;
+            double r = Math.Pow(secondI, firstI);
+            //int r = firstI * firstI;
             var b = Convert.ToString(r);
-            s.Push(b);  
+            sFinal.Push(b);  
         }
     }
 }
 
 
-for (int i = 0; i < s.Count(); i++)
+for (int i = 0; i < sFinal.Count(); i++)
 {
-    Console.WriteLine(s.GetAt(i)); 
+    Console.WriteLine(sFinal.GetAt(i)); 
 }
 
 
