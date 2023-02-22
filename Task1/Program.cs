@@ -138,8 +138,6 @@ ArrayList Reverse(ArrayList tokArray)
     return res.toList(res);
 }
 //ok
-
-
 ArrayList ToToken(string r)
 {
     ArrayList toToken = new ArrayList();
@@ -163,31 +161,24 @@ ArrayList ToToken(string r)
         }
     }
 
-    if (Buffer.Length>0)
+    if (Buffer!="")
     {
         toToken.Add(Buffer);
     }
     
     return toToken;
 }
-
-
-var g = ToToken("(7-2)^2");
+var g = ToToken("2*6^2");
 //3^3+(2*10/5)-3
-//Console.WriteLine(IsNumberToken("+"));
-
-
 ArrayList ReverseTok = Reverse(g);
-for (int i = 0; i < ReverseTok.Count(); i++)
-{
-    Console.WriteLine(ReverseTok.GetAt(i)); 
-}
+//for (int i = 0; i < ReverseTok.Count(); i++)
+//{
+   // Console.WriteLine(ReverseTok.GetAt(i)); 
+//}
 Console.WriteLine("-------------"); 
 bool vvvx = OperatorCheck("/");
 Console.WriteLine(vvvx);
 var sFinal =new Stack();
-
-
 
 for (int i = 0; i < ReverseTok.Count(); i++)
 {
@@ -235,8 +226,6 @@ for (int i = 0; i < ReverseTok.Count(); i++)
         }
     }
 }
-
-
 for (int i = 0; i < sFinal.Count(); i++)
 {
     Console.WriteLine(sFinal.GetAt(i)); 
@@ -325,7 +314,6 @@ public class ArrayList
         return _pointer;
     }
 }
-
 public class Stack
 {
     private const int Capacity = 50;
@@ -472,4 +460,3 @@ public class Queue
     }
     
 }
-
