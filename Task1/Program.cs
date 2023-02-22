@@ -17,6 +17,20 @@ bool IsNumb(string? l)
     }
     return true;
 }
+
+bool isFunc(string l)
+{
+    var check = false;
+    if (l is "sin" or "cos" or "tg" or "ctg")
+    {
+        check = true;
+    } else
+    {
+        check = false;
+    }
+
+    return check;
+}
 bool OperatorCheck(string l)
 {
     bool check = false;
@@ -105,14 +119,8 @@ ArrayList Reverse(ArrayList tokArray)
         {
             while ( operators.Count()!=0 &&
                 !LeftBreck(operators.Peek()) && 
-                (
-                    Prior(operators.Peek())>Prior(tokArray.GetAt(t)) || 
-                    (
-                    Prior(operators.Peek())==Prior(tokArray.GetAt(t)) && 
-                    LeftAsoc(tokArray.GetAt(t))
-                    )
-                )
-                )
+                (Prior(operators.Peek())>Prior(tokArray.GetAt(t)) || 
+                 (Prior(operators.Peek())==Prior(tokArray.GetAt(t)) && LeftAsoc(tokArray.GetAt(t)))))
             {
                 
                 res.Enqueue(operators.Pop());
