@@ -163,7 +163,16 @@ ArrayList ToToken(string r)
     {
        if (isFunc(r.Substring(c, 3)))
         {
-            Buffer = r.Substring(c, 3);
+            
+            
+            for (int i = c; i < r.Length; i++)
+            {
+                if (r[i] == ")") 
+                {
+                    break;
+                }
+                Buffer+= r[i];
+            }
         }
        else if (Char.IsNumber(r[c]))
         {
@@ -193,9 +202,9 @@ ArrayList ToToken(string r)
 var g = ToToken("2*6^2");
 //3^3+(2*10/5)-3
 ArrayList ReverseTok = Reverse(g);
-//for (int i = 0; i < ReverseTok.Count(); i++)
+//for (int i = 0; i < g.Count(); i++)
 //{
-   // Console.WriteLine(ReverseTok.GetAt(i)); 
+//   Console.WriteLine(ReverseTok.GetAt(i)); 
 //}
 Console.WriteLine("-------------"); 
 bool vvvx = OperatorCheck("/");
@@ -249,11 +258,11 @@ for (int i = 0; i < ReverseTok.Count(); i++)
     }
 }
 
-for (int i = 0l i < g.Count(); i++)
+for (int i = 0; i < g.Count(); i++)
 {
     Console.WriteLine(g);
 }
-for (int i = 0; i < sFinal.Count(); i++)
-{
-    Console.WriteLine(sFinal.GetAt(i)); 
-}
+//for (int i = 0; i < sFinal.Count(); i++)
+//{
+//    Console.WriteLine(sFinal.GetAt(i)); 
+//}
