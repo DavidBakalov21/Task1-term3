@@ -1,6 +1,9 @@
 ﻿
 
+using System.Collections;
 using Task1;
+
+
 
 bool IsNumb(string? l)
 {
@@ -155,24 +158,31 @@ ArrayList ToToken(string r)
     ArrayList toToken = new ArrayList();
     
     String Buffer = "";
-    foreach (char c in r)
+    String FuncBuffer = "";
+    for (int c=0; c < r.Length; c++)
     {
-        if (Char.IsNumber(c))
+       if (isFunc(r.Substring(c, 3)))
         {
-            Buffer += c;
-            
-        }else if (c is '+' or '-' or '/' or '*' or '(' or ')' or '^')
+            Buffer = r.Substring(c, 3);
+        }
+       else if (Char.IsNumber(r[c]))
         {
-            if (Buffer.Length>0)
+            Buffer += r[c];
+
+        }
+        else if (r[c] is '+' or '-' or '/' or '*' or '(' or ')' or '^')
+        {
+            if (Buffer.Length > 0)
             {
                 toToken.Add(Buffer);
                 Buffer = "";
-                
-            }
-            toToken.Add(c.ToString());
-        }
-    }
 
+            }
+            toToken.Add(r[c].ToString());
+        }
+
+        }
+    
     if (Buffer!="")
     {
         toToken.Add(Buffer);
@@ -237,6 +247,11 @@ for (int i = 0; i < ReverseTok.Count(); i++)
             sFinal.Push(b);  
         }
     }
+}
+
+for (int i = 0l i < g.Count(); i++)
+{
+    Console.WriteLine(g);
 }
 for (int i = 0; i < sFinal.Count(); i++)
 {
